@@ -1,33 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
-const defaultOptions = [
-  { label: "Item1" },
-  { label: "Item2" },
-  { label: "Item3" },
-  { label: "Item4" },
-];
+type defaultOptionsProps = {
+  option: string;
+};
 
-const DropDownComponent = () => {
+interface DropDownComponentProps {
+  defaultOptions: Array<defaultOptionsProps>;
+}
+
+const DropDownComponent = ({ defaultOptions }: DropDownComponentProps) => {
   const [clickDropDown, setClickDropDown] = useState(false);
 
+  const containerRef = useRef<HTMLInputElement>(null);
+  const textInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (clickDropDown && textInputRef.current) {
+      textInputRef.current.focus();
+    }
+  }, [clickDropDown]);
+
+  useEffect(() => {
+    const isClickedOut = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setClickDropDown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", isClickedOut);
+    return () => {
+      document.removeEventListener("mousedown", isClickedOut);
+    };
+  }, [containerRef]);
+
   return (
-    <div className="container">
+    <div className="container" ref={containerRef}>
       {clickDropDown ? (
-        <>
-          <input type="text" className="input-field" />
+        <div>
+          <input type="text" ref={textInputRef} className="input-field" />
           <div className="selector-content">
-            {defaultOptions.map((item, i) => (
-              <div className="selector-option" key={i}>
-                {item.label}
+            {defaultOptions.map((item, index) => (
+              <div className="selector-option" key={index}>
+                {item.option}
               </div>
             ))}
           </div>
-        </>
+        </div>
       ) : (
-        <div
-          className="select-element"
-          onClick={() => setClickDropDown(true)}
-        ></div>
+        <div className="select-element" onClick={() => setClickDropDown(true)}>
+          <img alt="" src="arrow.svg" width={16} />
+        </div>
       )}
     </div>
   );
