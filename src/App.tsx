@@ -2,10 +2,10 @@ import DropDownComponent from "./Components/SelectorComponent";
 import "./App.scss";
 
 const defaultOptions = [
-  { option: "Item1" },
-  { option: "Item2" },
-  { option: "Item3" },
-  { option: "Item4" },
+  { option: "Item1", optionIsSelected: false },
+  { option: "Item2", optionIsSelected: false },
+  { option: "Item3", optionIsSelected: false },
+  { option: "Item4", optionIsSelected: false },
 ];
 
 function App() {

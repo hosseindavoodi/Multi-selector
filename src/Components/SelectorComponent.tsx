@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, KeyboardEvent } from "react";
 
 type defaultOptionsProps = {
   option: string;
+  optionIsSelected: boolean;
 };
 
 interface DropDownComponentProps {
@@ -10,9 +11,22 @@ interface DropDownComponentProps {
 
 const DropDownComponent = ({ defaultOptions }: DropDownComponentProps) => {
   const [clickDropDown, setClickDropDown] = useState(false);
+  const [selectOptions, setSelectOptions] = useState(defaultOptions);
+  const [inputTextValue, setInputTextValue] = useState("");
 
   const containerRef = useRef<HTMLInputElement>(null);
   const textInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUserInter = (index: KeyboardEvent) => {
+    if (index.key === "Enter") {
+      selectOptions.unshift({
+        option: inputTextValue,
+        optionIsSelected: false,
+      });
+      setSelectOptions(selectOptions);
+      setInputTextValue("");
+    }
+  };
 
   useEffect(() => {
     if (clickDropDown && textInputRef.current) {
@@ -40,7 +54,14 @@ const DropDownComponent = ({ defaultOptions }: DropDownComponentProps) => {
     <div className="container" ref={containerRef}>
       {clickDropDown ? (
         <div>
-          <input type="text" ref={textInputRef} className="input-field" />
+          <input
+            type="text"
+            ref={textInputRef}
+            value={inputTextValue}
+            onKeyDown={handleUserInter}
+            className="input-field"
+            onChange={(e) => setInputTextValue(e.target.value)}
+          />
           <div className="selector-content">
             {defaultOptions.map((item, index) => (
               <div className="selector-option" key={index}>
