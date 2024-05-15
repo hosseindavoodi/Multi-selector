@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
+import clsx from "clsx";
 
 type defaultOptionsProps = {
   option: string;
@@ -50,6 +51,19 @@ const DropDownComponent = ({ defaultOptions }: DropDownComponentProps) => {
     };
   }, [containerRef]);
 
+  const handleClickOption = (param: number) => {
+    setClickDropDown(false);
+
+    const editedOptions = selectOptions.map((item, index) => {
+      if (index === param) {
+        return { ...item, optionIsSelected: true };
+      } else {
+        return { ...item, optionIsSelected: false };
+      }
+    });
+    setSelectOptions(editedOptions);
+  };
+
   return (
     <div className="container" ref={containerRef}>
       {clickDropDown ? (
@@ -63,8 +77,15 @@ const DropDownComponent = ({ defaultOptions }: DropDownComponentProps) => {
             onChange={(e) => setInputTextValue(e.target.value)}
           />
           <div className="selector-content">
-            {defaultOptions.map((item, index) => (
-              <div className="selector-option" key={index}>
+            {selectOptions.map((item, index) => (
+              <div
+                onClick={() => handleClickOption(index)}
+                className={clsx(
+                  "selector-option",
+                  item.optionIsSelected === true && "option-is-selected"
+                )}
+                key={index}
+              >
                 {item.option}
               </div>
             ))}
@@ -72,6 +93,8 @@ const DropDownComponent = ({ defaultOptions }: DropDownComponentProps) => {
         </div>
       ) : (
         <div className="select-element" onClick={() => setClickDropDown(true)}>
+          {selectOptions.find((item) => item.optionIsSelected === true)
+            ?.option || "Select option"}
           <img alt="" src="arrow.svg" width={16} />
         </div>
       )}
