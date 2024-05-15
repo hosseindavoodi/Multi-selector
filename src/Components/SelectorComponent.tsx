@@ -82,7 +82,7 @@ const DropDownComponent = ({ defaultOptions }: DropDownComponentProps) => {
                 onClick={() => handleClickOption(index)}
                 className={clsx(
                   "selector-option",
-                  item.optionIsSelected === true && "option-is-selected"
+                  item.optionIsSelected && "option-is-selected"
                 )}
                 key={index}
               >
@@ -93,9 +93,9 @@ const DropDownComponent = ({ defaultOptions }: DropDownComponentProps) => {
         </div>
       ) : (
         <div className="select-element" onClick={() => setClickDropDown(true)}>
-          {selectOptions.find((item) => item.optionIsSelected === true)
-            ?.option || "Select option"}
-          <img alt="" src="arrow.svg" width={16} />
+          {selectOptions.find((item) => item.optionIsSelected)?.option ||
+            "Select option"}
+          <img alt="arrow" src="arrow.svg" width={16} />
         </div>
       )}
     </div>
